@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TransactionType, TransactionStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { addMonths } from 'date-fns' // Biblioteca de data que já temos
 import { startOfDay, endOfDay } from 'date-fns' // Adicione se precisar, mas a lógica abaixo usa string direta
@@ -73,8 +73,8 @@ export async function GET(request: Request) {
             description: `Retirada Sócio - Adriano (${group.monthDisplay}) - ${group.status.replace('_', ' ')}`,
             amount: group.amount,
             dueDate: group.dateReference,
-            type: 'DESPESA_EMPRESA',
-            status: group.status,
+            type: TransactionType.DESPESA_EMPRESA,
+            status: group.status as TransactionStatus,
             category: null,
             createdAt: new Date(),
             updatedAt: new Date(),
