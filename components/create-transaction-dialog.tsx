@@ -36,11 +36,11 @@ const formSchema = z.object({
   status: z.enum(["EM_ABERTO", "PAGO"]),
   category: z.string().optional(),
   
-  isRecurring: z.boolean().default(false),
+  isRecurring: z.boolean(),
   recurrenceCount: z.coerce.number().min(2).max(120).optional(),
   
   // NOVO: Flag para editar todos
-  updateAll: z.boolean().default(false),
+  updateAll: z.boolean(),
 })
 
 interface Props {
