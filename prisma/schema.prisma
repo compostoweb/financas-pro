@@ -17,7 +17,8 @@
 // Estrutura do Banco de Dados
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["views"] // <--- ADICIONE ESTA LINHA
+  previewFeatures = ["views"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
