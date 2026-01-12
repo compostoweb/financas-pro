@@ -31,15 +31,15 @@ import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
   description: z.string().min(1, "Descrição obrigatória"),
-  amount: z.coerce.number().min(0.01, "Valor inválido"),
+  amount: z.number().min(0.01, "Valor inválido"),
   dueDate: z.string().min(1, "Data obrigatória"),
   type: z.enum(["RECEITA_EMPRESA", "DESPESA_EMPRESA", "DESPESA_SOCIO"]),
   status: z.enum(["EM_ABERTO", "PAGO"]),
   category: z.string().optional(),
   
-  isRecurring: z.boolean().default(false),
-  recurrenceCount: z.coerce.number().min(2).max(120).optional(),
-  updateAll: z.boolean().default(false),
+  isRecurring: z.boolean(),
+  recurrenceCount: z.number().min(2).max(120).optional(),
+  updateAll: z.boolean(),
 })
 
 interface Props {
