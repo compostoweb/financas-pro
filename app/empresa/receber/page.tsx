@@ -77,7 +77,7 @@ export default function ContasPagarPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">A Pagar (Aberto)</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-500">A Receber (Aberto)</CardTitle>
             <ArrowDownCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
@@ -88,7 +88,7 @@ export default function ContasPagarPage() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">Total Pago</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-500">Total Recebido</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
