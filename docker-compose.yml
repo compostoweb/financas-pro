@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: financas-pro-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-financas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-financas_secure_pass_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-financas_pro}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - financas-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-financas}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: financas-pro-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-financas}:${POSTGRES_PASSWORD:-financas_secure_pass_2026}@postgres:5432/${POSTGRES_DB:-financas_pro}?schema=public
+      NODE_ENV: production
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - financas-network
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        node server.js
+      "
+
+  # Nginx Reverse Proxy (opcional mas recomendado para produção)
+  nginx:
+    image: nginx:alpine
+    container_name: financas-pro-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - webapp
+    networks:
+      - financas-network
+
+networks:
+  financas-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

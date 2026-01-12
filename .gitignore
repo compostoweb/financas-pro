@@ -48,6 +48,17 @@ prisma/dev.db-journal
 # IDE
 .vscode/
 .idea/
+
+# Docker
+*.log
+
+# SSL certificates
+ssl/
+
+# Backups
+*.sql
+*.sql.gz
+backups/
 *.swp
 *.swo
 *~
