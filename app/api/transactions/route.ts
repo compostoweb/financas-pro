@@ -1,9 +1,8 @@
-import { PrismaClient, TransactionType, TransactionStatus } from '@prisma/client'
+import { TransactionType, TransactionStatus } from '@prisma/client'
 import { NextResponse } from 'next/server'
-import { addMonths } from 'date-fns' // Biblioteca de data que já temos
-import { startOfDay, endOfDay } from 'date-fns' // Adicione se precisar, mas a lógica abaixo usa string direta
-
-const prisma = new PrismaClient()
+import { addMonths } from 'date-fns'
+import { startOfDay, endOfDay } from 'date-fns'
+import { prisma } from '@/lib/prisma'
 
 // GET (Listagem) - Mantive a lógica inteligente do resumo do sócio
 export async function GET(request: Request) {
