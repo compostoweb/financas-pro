@@ -10,9 +10,27 @@ Para que a aplicação funcione corretamente, você precisa configurar as seguin
 DATABASE_URL=postgresql://usuario:senha@host:5432/nome_do_banco?schema=public
 ```
 
+**⚠️ IMPORTANTE - Caracteres Especiais na Senha:**
+
+Se sua senha contém caracteres especiais, você DEVE fazer URL encoding:
+- `#` → `%23`
+- `@` → `%40`
+- `:` → `%3A`
+- `/` → `%2F`
+- `?` → `%3F`
+- `&` → `%26`
+- `%` → `%25`
+
+**Exemplo com senha especial:**
+```
+# Senha: CW2026#admin
+# Correto: CW2026%23admin
+DATABASE_URL=postgresql://admincw:CW2026%23admin@host:5432/app_financas?schema=public
+```
+
 **Formato completo:**
 ```
-postgresql://[usuario]:[senha]@[host]:[porta]/[database]?schema=public
+postgresql://[usuario]:[senha_encoded]@[host]:[porta]/[database]?schema=public
 ```
 
 **Exemplo:**
@@ -82,6 +100,13 @@ As migrations serão executadas automaticamente ao iniciar o container. Elas cri
 - Índices e constraints necessários
 
 ## 🆘 Troubleshooting
+
+### Erro: "invalid port number in database URL"
+- **Causa**: Caracteres especiais na senha não foram encoded
+- **Solução**: 
+  1. Identifique os caracteres especiais na senha (exemplo: `#`, `@`, `:`)
+  2. Substitua por suas versões encoded (exemplo: `#` → `%23`)
+  3. Exemplo: `senha#123` deve ser `senha%23123`
 
 ### Erro: "Environment variable not found: DATABASE_URL"
 - **Causa**: Variável não configurada no Easypanel
