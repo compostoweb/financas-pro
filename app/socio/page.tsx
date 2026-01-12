@@ -80,7 +80,7 @@ export default function SocioPage() {
         <div className="text-sm">
             <p className="font-semibold mb-1 text-blue-800">Como isso funciona?</p>
             <p className="text-blue-700/80 leading-relaxed">
-                Todas as despesas cadastradas aqui são <span className="font-bold text-black-900">automaticamente somadas</span> e exibidas em duas linhas únicas <span className="font-bold text-black-900">("Retirada Sócio - Adriano (mês vigente) - Pago") e ("Retirada Sócio - Adriano (mês vigente) - Em Aberto"),</span> lá nas Contas a Pagar da Empresa. Isso simplifica o fluxo de caixa da empresa mantendo o detalhe aqui.
+                Todas as despesas são <span className="font-bold text-black-900">automaticamente somadas</span> e exibidas como <span className="font-bold text-black-900">("Retirada Sócio - Adriano (mês vigente) - Pago") e ("Retirada Sócio - Adriano (mês vigente) - Em Aberto"),</span> lá no Contas a Pagar da Empresa. Isso simplifica o fluxo de caixa da empresa mantendo o detalhe aqui.
             </p>
         </div>
       </div>

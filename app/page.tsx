@@ -5,11 +5,12 @@ import { OverviewCards } from "@/components/dashboard/overview-cards"
 import { CashFlowChart } from "@/components/dashboard/cash-flow-chart"
 import { CategoryChart } from "@/components/dashboard/category-chart"
 import { DreCard } from "@/components/dashboard/dre-card"
+import { NotificationsCard } from "@/components/dashboard/notifications-card" // <--- 1. IMPORT NOVO
 import { CreateTransactionDialog } from "@/components/create-transaction-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Bell, Filter } from "lucide-react"
+import { Filter } from "lucide-react"
 import { DatePickerWithRange } from "@/components/dashboard/date-range-picker"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns"
@@ -101,38 +102,30 @@ export default function Dashboard() {
       {/* CARDS KPI */}
       <OverviewCards transactions={filteredTransactions} />
 
-     {/* ÁREA PRINCIPAL: GRÁFICO */}
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div className="lg:col-span-2">
-      <Card className="h-full border-none shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg font-bold text-slate-800">Fluxo de Caixa</CardTitle>
-          <Filter className="h-4 w-4 text-slate-400" />
-        </CardHeader>
-        <CardContent>
-          {/* ATUALIZADO: Passando o dateRange para preencher os dias vazios */}
-          <CashFlowChart 
-             transactions={filteredTransactions} 
-             viewMode={viewMode} 
-             dateRange={dateRange} 
-          />
-        </CardContent>
-      </Card>
-  </div>
+      {/* ÁREA PRINCIPAL: GRÁFICO E NOTIFICAÇÕES */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+            <Card className="h-full border-none shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-lg font-bold text-slate-800">Fluxo de Caixa</CardTitle>
+                <Filter className="h-4 w-4 text-slate-400" />
+              </CardHeader>
+              <CardContent>
+                {/* ATUALIZADO: Passando o dateRange para preencher os dias vazios */}
+                <CashFlowChart 
+                   transactions={filteredTransactions} 
+                   viewMode={viewMode} 
+                   dateRange={dateRange} 
+                />
+              </CardContent>
+            </Card>
+        </div>
 
-        {/* NOTIFICAÇÕES */}
-        <Card className="h-full border-none shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-base font-medium">Notificações</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center h-[200px] text-center p-6">
-            <div className="bg-emerald-50 p-4 rounded-full mb-4">
-              <Bell className="h-8 w-8 text-emerald-500" />
-            </div>
-            <h3 className="font-semibold text-slate-900">Tudo em dia!</h3>
-            <p className="text-sm text-slate-500 mt-2">Nenhuma conta vencendo nos próximos 3 dias.</p>
-          </CardContent>
-        </Card>
+        {/* NOTIFICAÇÕES (DINÂMICO AGORA) */}
+        <div className="h-full">
+           {/* Usamos allTransactions aqui para alertar sobre vencimentos HOJE independente do filtro de data */}
+           <NotificationsCard transactions={allTransactions} />
+        </div>
       </div>
 
       {/* SEGUNDA LINHA: GRÁFICOS SECUNDÁRIOS */}

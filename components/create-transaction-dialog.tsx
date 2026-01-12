@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Plus, Pencil, Repeat, Layers } from "lucide-react" 
+import { toast } from "sonner" // <--- IMPORTANTE
 
 import { Button } from "@/components/ui/button"
 import {
@@ -30,17 +31,15 @@ import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
   description: z.string().min(1, "Descrição obrigatória"),
-  amount: z.number().min(0.01, "Valor inválido"),
+  amount: z.coerce.number().min(0.01, "Valor inválido"),
   dueDate: z.string().min(1, "Data obrigatória"),
   type: z.enum(["RECEITA_EMPRESA", "DESPESA_EMPRESA", "DESPESA_SOCIO"]),
   status: z.enum(["EM_ABERTO", "PAGO"]),
   category: z.string().optional(),
   
-  isRecurring: z.boolean(),
-  recurrenceCount: z.number().min(2).max(120).optional(),
-  
-  // NOVO: Flag para editar todos
-  updateAll: z.boolean(),
+  isRecurring: z.boolean().default(false),
+  recurrenceCount: z.coerce.number().min(2).max(120).optional(),
+  updateAll: z.boolean().default(false),
 })
 
 interface Props {
@@ -53,8 +52,6 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
   const [open, setOpen] = useState(false)
   const [categories, setCategories] = useState<any[]>([]) 
   const isEditing = !!transactionToEdit
-  
-  // Verifica se o item sendo editado faz parte de uma série
   const hasRecurrenceSeries = isEditing && !!transactionToEdit.recurrenceId
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,13 +70,13 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
   })
 
   const isRecurring = form.watch("isRecurring")
-  const updateAll = form.watch("updateAll") // Monitora se o usuário quer editar tudo
+  const updateAll = form.watch("updateAll")
 
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
-      .catch((err) => console.error(err))
+      .catch(() => toast.error("Erro ao carregar categorias"))
   }, [])
 
   useEffect(() => {
@@ -142,16 +139,22 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
       })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao salvar");
+        throw new Error("Erro ao salvar");
       }
 
+      // FEEDBACK VISUAL
+      const successMessage = isEditing 
+        ? "Transação atualizada com sucesso!" 
+        : "Transação criada com sucesso!";
+      
+      toast.success(successMessage);
+
       setOpen(false)
-      if (!isEditing) form.reset() // Reseta só se for criação
+      if (!isEditing) form.reset()
       onSuccess()
     } catch (error) {
       console.error(error)
-      alert("Erro ao salvar: verifique o console.")
+      toast.error("Ocorreu um erro ao salvar a transação.")
     }
   }
 
@@ -200,20 +203,12 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Valor (R$)</FormLabel>
-                        <FormControl>
-                            <Input 
-                                type="number" 
-                                step="0.01" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                            />
-                        </FormControl>
+                        <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
                         <FormMessage />
                         </FormItem>
                     )}
                 />
                 
-                {/* DATA: Desativada se "Editar Tudo" estiver ligado */}
                 <FormField
                     control={form.control}
                     name="dueDate"
@@ -224,7 +219,7 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                             <Input 
                                 type="date" 
                                 {...field} 
-                                disabled={updateAll} // Trava data se editar em massa
+                                disabled={updateAll} 
                                 className={updateAll ? "bg-slate-100 text-slate-400" : ""}
                             />
                         </FormControl>
@@ -274,7 +269,6 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                 />
             </div>
             
-            {/* OPÇÃO DE EDITAR EM MASSA (Apenas se tiver ID de grupo) */}
             {hasRecurrenceSeries && (
               <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
                 <FormField
@@ -304,7 +298,6 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
               </div>
             )}
 
-            {/* OPÇÃO DE CRIAR RECORRÊNCIA (Apenas se não estiver editando) */}
             {!isEditing && (
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-4">
                 <FormField
@@ -339,14 +332,7 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                        <FormItem>
                          <FormLabel>Quantas vezes (meses)?</FormLabel>
                          <FormControl>
-                           <Input 
-                             type="number" 
-                             min={2} 
-                             max={120} 
-                             {...field} 
-                             value={field.value ?? 2}
-                             onChange={(e) => field.onChange(parseInt(e.target.value) || 2)}
-                           />
+                           <Input type="number" min={2} max={120} {...field} value={field.value ?? 2} />
                          </FormControl>
                          <FormMessage />
                        </FormItem>
