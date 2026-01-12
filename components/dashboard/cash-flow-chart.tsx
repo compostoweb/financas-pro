@@ -163,7 +163,7 @@ export function CashFlowChart({ transactions, viewMode, dateRange }: CashFlowCha
                     cursor={{ fill: '#f8fafc' }}
                     labelFormatter={(label, payload) => payload[0]?.payload.fullDate || label}
                     contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                    formatter={(value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
+                    formatter={(value: number | undefined) => value !== undefined ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value) : 'R$ 0,00'}
                   />
                   <Legend verticalAlign="top" height={36} iconType="circle" />
                   <Bar 
