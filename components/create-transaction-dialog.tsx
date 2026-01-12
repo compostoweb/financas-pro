@@ -30,14 +30,14 @@ import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
   description: z.string().min(1, "Descrição obrigatória"),
-  amount: z.coerce.number().min(0.01, "Valor inválido"),
+  amount: z.number().min(0.01, "Valor inválido"),
   dueDate: z.string().min(1, "Data obrigatória"),
   type: z.enum(["RECEITA_EMPRESA", "DESPESA_EMPRESA", "DESPESA_SOCIO"]),
   status: z.enum(["EM_ABERTO", "PAGO"]),
   category: z.string().optional(),
   
   isRecurring: z.boolean(),
-  recurrenceCount: z.coerce.number().min(2).max(120).optional(),
+  recurrenceCount: z.number().min(2).max(120).optional(),
   
   // NOVO: Flag para editar todos
   updateAll: z.boolean(),
@@ -200,7 +200,14 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Valor (R$)</FormLabel>
-                        <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                        <FormControl>
+                            <Input 
+                                type="number" 
+                                step="0.01" 
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                        </FormControl>
                         <FormMessage />
                         </FormItem>
                     )}
@@ -332,7 +339,14 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                        <FormItem>
                          <FormLabel>Quantas vezes (meses)?</FormLabel>
                          <FormControl>
-                           <Input type="number" min={2} max={120} {...field} value={field.value ?? 2} />
+                           <Input 
+                             type="number" 
+                             min={2} 
+                             max={120} 
+                             {...field} 
+                             value={field.value ?? 2}
+                             onChange={(e) => field.onChange(parseInt(e.target.value) || 2)}
+                           />
                          </FormControl>
                          <FormMessage />
                        </FormItem>
