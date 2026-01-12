@@ -77,6 +77,10 @@ export async function GET(request: Request) {
             status: group.status,
             category: null,
             createdAt: new Date(),
+            updatedAt: new Date(),
+            recurrenceId: null,
+            attachmentUrl: null,
+            paymentDate: null,
          }
        })
 
