@@ -25,7 +25,7 @@ const sidebarItems = [
   {
     group: "PRINCIPAL",
     items: [
-      { href: "/", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/", label: "Dashboard", icon: LayoutDashboard, borderColor: "border-emerald-500" },
     ],
   },
   {
@@ -33,19 +33,19 @@ const sidebarItems = [
     items: [
       { href: "/empresa/pagar", label: "Contas a Pagar", icon: ArrowDownCircle, iconColor: "text-orange-400", borderColor: "border-orange-400" },
       { href: "/empresa/receber", label: "Contas a Receber", icon: ArrowUpCircle, iconColor: "text-emerald-400", borderColor: "border-emerald-400" },
-      { label: "Relatório DRE", icon: FileText, href: "/relatorios/dre", color: "text-orange-500" }, // <--- NOVO
+      { label: "Relatório DRE", icon: FileText, href: "/relatorios/dre", borderColor: "border-orange-500" },
     ],
   },
   {
     group: "SÓCIO",
     items: [
-      { href: "/socio", label: "Adriano - Pessoal", icon: User },
+      { href: "/socio", label: "Adriano - Pessoal", icon: User, borderColor: "border-blue-500" },
     ],
   },
   {
     group: "CONFIGURAÇÕES",
     items: [
-      { href: "/categorias", label: "Categorias", icon: Tags },
+      { href: "/categorias", label: "Categorias", icon: Tags, borderColor: "border-slate-500" },
     ],
   },
 ];
