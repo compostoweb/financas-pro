@@ -113,7 +113,7 @@ export function CategoryChart({ transactions, onCategoryClick, selectedCategory 
                   ))}
                 </Pie>
                 <Tooltip 
-                    formatter={(value: number) => formatCurrency(value)} 
+                    formatter={(value: number | undefined) => value !== undefined ? formatCurrency(value) : ''} 
                     contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
                     itemStyle={{ color: "#1e293b" }}
                 />
