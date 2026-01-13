@@ -3,16 +3,26 @@ import { NextResponse } from 'next/server'
 import { addMonths } from 'date-fns'
 import { startOfDay, endOfDay } from 'date-fns'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET (Listagem) - Mantive a lógica inteligente do resumo do sócio
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const type = searchParams.get('type')
-  const startDate = searchParams.get('startDate') // NOVO
-  const endDate = searchParams.get('endDate')     // NOVO
-
   try {
-    const whereCondition: any = {}
+    // Validar autenticação
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const type = searchParams.get('type')
+    const startDate = searchParams.get('startDate') // NOVO
+    const endDate = searchParams.get('endDate')     // NOVO
+
+    const whereCondition: any = {
+      userId: session.user.id // FILTRO CRÍTICO: apenas dados do usuário
+    }
     
     // Filtro de Tipo
     if (type) whereCondition.type = type
@@ -35,7 +45,10 @@ export async function GET(request: Request) {
     if (type === 'DESPESA_EMPRESA') {
        // Para calcular o resumo do sócio corretamente, precisamos pegar as despesas dele 
        // TAMBÉM dentro do período filtrado, senão o resumo fica errado.
-       const socioWhere: any = { type: 'DESPESA_SOCIO' }
+       const socioWhere: any = { 
+         type: 'DESPESA_SOCIO',
+         userId: session.user.id // FILTRO CRÍTICO: apenas dados do usuário
+       }
        
        if (startDate && endDate) {
             socioWhere.dueDate = {
@@ -75,6 +88,7 @@ export async function GET(request: Request) {
             type: TransactionType.DESPESA_EMPRESA,
             status: group.status as TransactionStatus,
             category: null,
+            userId: session?.user?.id || 'default-user-001', // ADICIONAR USERID COM FALLBACK
             createdAt: new Date(),
             updatedAt: new Date(),
             recurrenceId: null,
@@ -119,6 +133,12 @@ const createTransactionSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // Validar autenticação
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const json = await request.json()
     const body = createTransactionSchema.parse(json)
 
@@ -133,7 +153,8 @@ export async function POST(request: Request) {
             type: body.type,
             status: body.status,
             category: body.category || null,
-            recurrenceId: null // Sem grupo
+            recurrenceId: null, // Sem grupo
+            userId: session.user.id // ADICIONAR USERID
           },
         })
         return NextResponse.json(transaction, { status: 201 })
@@ -157,7 +178,8 @@ export async function POST(request: Request) {
                 type: body.type,
                 status: currentStatus,
                 category: body.category || null,
-                recurrenceId: seriesId // TODAS GANHAM O MESMO ID
+                recurrenceId: seriesId, // TODAS GANHAM O MESMO ID
+                userId: session.user.id // ADICIONAR USERID
             })
         }
 

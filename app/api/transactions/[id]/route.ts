@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 interface Context {
   params: Promise<{ id: string }>
@@ -8,7 +10,26 @@ interface Context {
 // DELETE
 export async function DELETE(request: Request, { params }: Context) {
   try {
+    // Validar autenticação
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const { id } = await params
+    
+    // Verificar se a transação pertence ao usuário antes de deletar
+    const transaction = await prisma.transaction.findFirst({
+      where: {
+        id,
+        userId: session.user.id
+      }
+    })
+
+    if (!transaction) {
+      return NextResponse.json({ error: "Transação não encontrada ou não autorizado" }, { status: 404 })
+    }
+
     await prisma.transaction.delete({ where: { id } })
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -19,8 +40,26 @@ export async function DELETE(request: Request, { params }: Context) {
 // PATCH (Editar)
 export async function PATCH(request: Request, { params }: Context) {
   try {
+    // Validar autenticação
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const { id } = await params
     const json = await request.json()
+
+    // Verificar se a transação pertence ao usuário
+    const currentTransaction = await prisma.transaction.findFirst({
+      where: {
+        id,
+        userId: session.user.id
+      }
+    })
+    
+    if (!currentTransaction) {
+        return NextResponse.json({ error: "Transação não encontrada ou não autorizado" }, { status: 404 })
+    }
 
     // 1. Verifica se vai atualizar TODOS da série
     const updateAll = json.updateAll === true;
@@ -47,13 +86,6 @@ export async function PATCH(request: Request, { params }: Context) {
 
     // --- LÓGICA DE ATUALIZAÇÃO ---
 
-    // Primeiro buscamos a transação original para pegar o recurrenceId
-    const currentTransaction = await prisma.transaction.findUnique({ where: { id } })
-    
-    if (!currentTransaction) {
-        return NextResponse.json({ error: "Transação não encontrada" }, { status: 404 })
-    }
-
     let result;
 
     if (updateAll && currentTransaction.recurrenceId) {
@@ -62,7 +94,10 @@ export async function PATCH(request: Request, { params }: Context) {
         // Mas se ele mudou, infelizmente perde a numeração (complexidade extra para manter)
         
         result = await prisma.transaction.updateMany({
-            where: { recurrenceId: currentTransaction.recurrenceId },
+            where: { 
+              recurrenceId: currentTransaction.recurrenceId,
+              userId: session.user.id // GARANTIR ISOLAMENTO
+            },
             data: dataToUpdate,
         })
     } else {

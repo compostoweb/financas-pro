@@ -39,6 +39,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   transactions  Transaction[] @relation("UserTransactions")
+  categories    Category[] @relation("UserCategories")
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -49,7 +50,7 @@ model User {
 model Account {
   id                 String  @id @default(cuid())
   userId             String
-  user               User    @relation(fields: [userId], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: id, onDelete: Cascade)
   type               String
   provider           String  // "google", "credentials"
   providerAccountId  String
@@ -69,7 +70,7 @@ model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
-  user         User     @relation(fields: [userId], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: id, onDelete: Cascade)
   expires      DateTime
 
   @@index([userId])
@@ -100,7 +101,7 @@ enum TransactionStatus {
 model Transaction {
   id           String   @id @default(uuid())
   userId       String   // Novo: Vincular ao usuário
-  user         User     @relation("UserTransactions", fields: [userId], onDelete: Cascade)
+  user         User     @relation("UserTransactions", fields: [userId], references: id, onDelete: Cascade)
   description  String
   amount       Decimal
   dueDate      DateTime
@@ -137,11 +138,15 @@ view UnifiedTransactions {
 
 model Category {
   id        String   @id @default(uuid())
+  userId    String   // Novo: Vincular ao usuário
+  user      User     @relation("UserCategories", fields: [userId], references: id, onDelete: Cascade)
   name      String
   color     String   @default("#64748b")
   budget    Decimal  @default(0)
   scope     String   @default("BOTH") // VALUES: "COMPANY", "PARTNER", "BOTH"
   createdAt DateTime @default(now())
+  
+  @@index([userId])
 }
 
 // Vamos criar uma tabela de Configurações para salvar os impostos

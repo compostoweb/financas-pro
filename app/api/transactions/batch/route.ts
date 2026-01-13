@@ -1,8 +1,16 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function POST(request: Request) {
   try {
+    // Validar autenticação
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const json = await request.json()
     const { ids } = json
 
@@ -10,10 +18,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Nenhum ID fornecido" }, { status: 400 })
     }
 
-    // Deleta todas as transações cujos IDs estejam na lista enviada
+    // Deleta todas as transações cujos IDs estejam na lista enviada E pertençam ao usuário
     const result = await prisma.transaction.deleteMany({
       where: {
-        id: { in: ids }
+        id: { in: ids },
+        userId: session.user.id // FILTRO CRÍTICO: apenas dados do usuário
       }
     })
 

@@ -1,11 +1,12 @@
 import { withAuth } from "next-auth/middleware"
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
 // Rotas públicas que não requerem autenticação
 const publicRoutes = ["/auth/login", "/auth/register", "/auth/error"]
 
 export default withAuth(
-  function middleware(request: NextRequest) {
+  function middleware(request: any) {
     const pathname = request.nextUrl.pathname
     const isPublicRoute = publicRoutes.includes(pathname)
 
@@ -15,7 +16,7 @@ export default withAuth(
       return NextResponse.redirect(new URL("/", request.url))
     }
 
-    // Adicionarheader com ID do usuário para logs
+    // Adicionar header com ID do usuário para logs
     const requestHeaders = new Headers(request.headers)
     if (request.nextauth?.token?.id) {
       requestHeaders.set("x-user-id", request.nextauth.token.id as string)

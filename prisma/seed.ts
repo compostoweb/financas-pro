@@ -12,12 +12,16 @@ async function main() {
     console.log('🗑️ 2. Limpando transações antigas...')
     await prisma.transaction.deleteMany()
 
+    // Usar o usuário padrão
+    const DEFAULT_USER_ID = 'default-user-001'
+
     console.log('🌱 3. Criando novos dados...')
 
     // 1. Criar Despesas da Empresa
     await prisma.transaction.createMany({
       data: [
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Servidor VPS', 
           amount: 150.00, 
           dueDate: new Date('2026-01-10T12:00:00Z'), 
@@ -25,6 +29,7 @@ async function main() {
           status: 'PAGO' 
         },
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Licença Software', 
           amount: 299.90, 
           dueDate: new Date('2026-01-15T12:00:00Z'), 
@@ -32,6 +37,7 @@ async function main() {
           status: 'EM_ABERTO' 
         },
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Marketing Google', 
           amount: 500.00, 
           dueDate: new Date('2026-01-20T12:00:00Z'), 
@@ -45,6 +51,7 @@ async function main() {
     await prisma.transaction.createMany({
       data: [
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Cliente A - Consultoria', 
           amount: 2500.00, 
           dueDate: new Date('2026-01-05T12:00:00Z'), 
@@ -52,6 +59,7 @@ async function main() {
           status: 'PAGO' 
         },
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Cliente B - Projeto Web', 
           amount: 4000.00, 
           dueDate: new Date('2026-01-25T12:00:00Z'), 
@@ -66,6 +74,7 @@ async function main() {
     await prisma.transaction.createMany({
       data: [
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Uber Pessoal', 
           amount: 100.00, 
           dueDate: new Date('2026-01-12T12:00:00Z'), 
@@ -73,6 +82,7 @@ async function main() {
           status: 'PAGO' 
         },
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Almoço Domingo', 
           amount: 50.00, 
           dueDate: new Date('2026-01-12T12:00:00Z'), 
@@ -80,6 +90,7 @@ async function main() {
           status: 'PAGO' 
         },
         { 
+          userId: DEFAULT_USER_ID,
           description: 'Farmácia', 
           amount: 200.00, 
           dueDate: new Date('2026-01-14T12:00:00Z'), 
