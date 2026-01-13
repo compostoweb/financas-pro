@@ -1,11 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
+
+
+const prisma = new PrismaClient()
 
 interface Context {
   params: Promise<{ id: string }>
 }
 
-// DELETE (Já existia)
 export async function DELETE(request: Request, { params }: Context) {
   try {
     const { id } = await params
@@ -16,7 +18,6 @@ export async function DELETE(request: Request, { params }: Context) {
   }
 }
 
-// PATCH (Novo: Para Editar)
 export async function PATCH(request: Request, { params }: Context) {
   try {
     const { id } = await params
@@ -27,6 +28,7 @@ export async function PATCH(request: Request, { params }: Context) {
       data: {
         name: json.name,
         color: json.color,
+        budget: json.budget, // <--- ATUALIZA O ORÇAMENTO
       },
     })
     

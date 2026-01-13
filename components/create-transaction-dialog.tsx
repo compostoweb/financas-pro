@@ -45,10 +45,11 @@ const formSchema = z.object({
 interface Props {
   onSuccess: () => void
   defaultType?: "RECEITA_EMPRESA" | "DESPESA_EMPRESA" | "DESPESA_SOCIO"
-  transactionToEdit?: any 
+  transactionToEdit?: any
+  className?: string
 }
 
-export function CreateTransactionDialog({ onSuccess, defaultType, transactionToEdit }: Props) {
+export function CreateTransactionDialog({ onSuccess, defaultType, transactionToEdit, className }: Props) {
   const [open, setOpen] = useState(false)
   const [categories, setCategories] = useState<any[]>([]) 
   const isEditing = !!transactionToEdit
@@ -166,7 +167,7 @@ export function CreateTransactionDialog({ onSuccess, defaultType, transactionToE
                 <Pencil className="h-4 w-4" />
             </Button>
         ) : (
-            <Button className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20">
+            <Button className={`bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 ${className || ''}`}>
                 <Plus className="mr-2 h-4 w-4" />
                 Nova Transação
             </Button>

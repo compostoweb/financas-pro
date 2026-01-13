@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -30,8 +31,9 @@ const sidebarItems = [
   {
     group: "EMPRESA",
     items: [
-      { href: "/empresa/pagar", label: "Contas a Pagar", icon: ArrowDownCircle },
-      { href: "/empresa/receber", label: "Contas a Receber", icon: ArrowUpCircle },
+      { href: "/empresa/pagar", label: "Contas a Pagar", icon: ArrowDownCircle, iconColor: "text-orange-400", borderColor: "border-orange-400" },
+      { href: "/empresa/receber", label: "Contas a Receber", icon: ArrowUpCircle, iconColor: "text-emerald-400", borderColor: "border-emerald-400" },
+      { label: "Relatório DRE", icon: FileText, href: "/relatorios/dre", color: "text-orange-500" }, // <--- NOVO
     ],
   },
   {
@@ -85,7 +87,7 @@ export function Sidebar() {
         {sidebarItems.map((group) => (
           <div key={group.group}>
             {(!isCollapsed || isMobile) && (
-              <h3 className="text-[10px] font-bold text-slate-500 mb-2 px-4 tracking-wider uppercase">
+              <h3 className="text-[10px] font-bold text-slate-300 mb-2 px-4 tracking-wider uppercase">
                 {group.group}
               </h3>
             )}
@@ -100,13 +102,16 @@ export function Sidebar() {
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                         isActive
-                          ? "bg-slate-800 text-white shadow-sm border-l-4 border-emerald-500"
+                          ? `bg-slate-800 text-white shadow-sm border-l-4 ${item.borderColor || "border-emerald-500"}`
                           : "text-slate-400 hover:bg-slate-800/50 hover:text-white",
                         isCollapsed && !isMobile && "justify-center px-2"
                       )}
                       title={isCollapsed ? item.label : undefined}
                     >
-                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-emerald-400" : "text-slate-400")} />
+                      <item.icon className={cn(
+                        "h-5 w-5 shrink-0", 
+                        item.iconColor || (isActive ? "text-emerald-400" : "text-slate-400")
+                      )} />
                       {(!isCollapsed || isMobile) && <span>{item.label}</span>}
                     </Link>
                   </li>
@@ -126,7 +131,7 @@ export function Sidebar() {
           {(!isCollapsed || isMobile) && (
             <div className="text-sm overflow-hidden">
               <p className="text-white font-medium truncate">Adriano</p>
-              <p className="text-xs text-slate-500">Sócio</p>
+              <p className="text-xs text-slate-400">Sócio</p>
             </div>
           )}
         </div>
