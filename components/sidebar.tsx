@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { signOut } from "next-auth/react";
 import { 
   LayoutDashboard, 
   ArrowDownCircle, 
@@ -14,7 +15,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  FileText
+  FileText,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -123,7 +125,7 @@ export function Sidebar() {
       </nav>
 
       {/* Footer / User Info */}
-      <div className={cn("p-4 border-t border-slate-800 bg-[#0b1120]", isCollapsed && !isMobile && "flex justify-center")}>
+      <div className={cn("p-4 border-t border-slate-800 bg-[#0b1120] space-y-3", isCollapsed && !isMobile && "flex flex-col justify-center items-center")}>
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
             AD
@@ -135,6 +137,21 @@ export function Sidebar() {
             </div>
           )}
         </div>
+        
+        {/* Logout Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => signOut({ callbackUrl: "/auth/login", redirect: true })}
+          className={cn(
+            "w-full text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 flex items-center justify-start gap-2",
+            isCollapsed && !isMobile && "justify-center w-auto"
+          )}
+          title={isCollapsed && !isMobile ? "Sair" : undefined}
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          {(!isCollapsed || isMobile) && <span className="text-sm">Sair</span>}
+        </Button>
       </div>
     </div>
   );
