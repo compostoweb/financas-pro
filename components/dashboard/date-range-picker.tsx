@@ -300,20 +300,12 @@ export function DatePickerWithRange({
           </Button>
 
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="w-full h-screen max-w-full rounded-none flex flex-col p-0 bg-white">
-              <DialogHeader className="p-4 border-b border-slate-200 flex flex-row items-center justify-between gap-4">
+            <DialogContent 
+              className="w-full h-[100dvh] max-w-full rounded-none flex flex-col p-0 bg-white gap-0 m-0 top-0 left-0 translate-x-0 translate-y-0"
+              showCloseButton={true}
+            >
+              <DialogHeader className="p-4 border-b border-slate-200 flex-shrink-0">
                 <DialogTitle className="text-lg font-bold text-slate-900">Selecione o período</DialogTitle>
-                
-                {/* Botão fechar já existia, desabilitei esse}
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="h-8 w-8 text-slate-500 hover:text-slate-900"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </Button> */}
-              
               </DialogHeader> 
 
               <div className="flex-1 overflow-y-auto flex flex-col">
@@ -441,7 +433,7 @@ export function DatePickerWithRange({
               </div>
 
               {/* Botões de ação */}
-              <div className="border-t border-slate-200 p-4 flex gap-2 bg-white">
+              <div className="border-t border-slate-200 p-4 flex gap-2 bg-white flex-shrink-0">
                 <Button
                   variant="outline"
                   className="flex-1 bg-white border-slate-300 hover:bg-slate-50"
