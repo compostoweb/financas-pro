@@ -116,7 +116,7 @@ export default function DrePage() {
     receitaBruta > 0 ? ((val / receitaBruta) * 100).toFixed(1) + "%" : "0%"
 
   return (
-    <div className="space-y-4 max-w-5xl mx-auto pb-10 px-1 md:px-6 margin-top-1">
+    <div className="space-y-4 max-w-5xl mx-auto pb-10 px-1 md:px-6">
       
       {/* HEADER ADAPTÁVEL AO MOBILE (flex-col no mobile, flex-row no desktop) */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pt-4">
