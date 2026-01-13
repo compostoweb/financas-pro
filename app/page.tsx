@@ -98,16 +98,33 @@ export default function Dashboard() {
       {/* HEADER */}
       <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-100">
         <div className="space-y-3 md:space-y-0 md:flex md:flex-row md:justify-between md:items-center md:gap-4">
-          <div className="shrink-0">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900">Dashboard</h1>
-            <p className="text-xs md:text-sm text-slate-500">Visão geral das suas finanças</p>
+          <div className="flex justify-between items-start md:shrink-0">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900">Dashboard</h1>
+              <p className="text-xs md:text-sm text-slate-500">Visão geral das suas finanças</p>
+            </div>
+            {/* Visão Diária alinhada à direita no mobile */}
+            <Select value={viewMode} onValueChange={(v: any) => setViewMode(v)}>
+              <SelectTrigger className="w-[137.5px] md:w-[140px] bg-slate-50 border-slate-200 h-9 text-[13.8px] md:text-sm shrink-0 md:hidden">
+                <SelectValue placeholder="Visão" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="daily">Visão Diária</SelectItem>
+                <SelectItem value="monthly">Visão Mensal</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="w-full md:w-auto space-y-2 md:space-y-0 md:flex md:items-center md:gap-2">
-            {/* Filtros em linha no mobile */}
-            <div className="flex items-center gap-1 w-full md:w-auto">
+            {/* Filtro de data com largura total no mobile */}
+            <div className="w-full md:w-auto">
+              <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+            </div>
+
+            {/* Visão no desktop */}
+            <div className="hidden md:flex items-center gap-2">
               <Select value={viewMode} onValueChange={(v: any) => setViewMode(v)}>
-                <SelectTrigger className="w-[137.5px] md:w-[140px] bg-slate-50 border-slate-200 h-9 text-[13.8px] md:text-sm shrink-0">
+                <SelectTrigger className="w-[140px] bg-slate-50 border-slate-200 h-9 text-sm shrink-0">
                   <SelectValue placeholder="Visão" />
                 </SelectTrigger>
                 <SelectContent>
@@ -115,10 +132,6 @@ export default function Dashboard() {
                   <SelectItem value="monthly">Visão Mensal</SelectItem>
                 </SelectContent>
               </Select>
-
-              <div className="flex-1 min-w-0 md:flex-none md:w-auto">
-                <DatePickerWithRange date={dateRange} setDate={setDateRange} />
-              </div>
             </div>
 
             {/* Ações em linha separada no mobile */}
