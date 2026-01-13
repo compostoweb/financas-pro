@@ -71,7 +71,7 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen w-screen flex flex-col items-center pt-[50px] md:pt-0 md:justify-center justify-start bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="min-h-screen w-screen flex flex-col items-center pt-[30px] md:pt-0 md:justify-center justify-start bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
       {/* Logo */}
       <div className="mb-8 flex items-center gap-2">
         <PieChart className="w-10 h-10 text-emerald-500" />
